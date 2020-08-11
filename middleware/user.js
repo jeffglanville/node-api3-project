@@ -36,3 +36,8 @@ function validateUser() {
         .catch(next)
     }
 }
+
+module.exports = {
+    validateUserId,
+    validateUser
+}
