@@ -2,83 +2,71 @@ const express = require('express');
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  // do your magic!
+const { users, validateUserId, validateUser, validatePost } = require("../middleware/user")
+
+router.post('/users', validateUser, (req, res) => {
+  users.insert(req.body)
+  .then((user) => {
+    res.status(201).json(user)
+  })
+  .catch(next)
 });
 
-router.post('/:id/posts', (req, res) => {
-  // do your magic!
-});
-
-router.get('/', (req, res) => {
-  // do your magic!
-});
-
-router.get('/:id', (req, res) => {
-  // do your magic!
-});
-
-router.get('/:id/posts', (req, res) => {
-  // do your magic!
-});
-
-router.delete('/:id', (req, res) => {
-  // do your magic!
-});
-
-router.put('/:id', (req, res) => {
-  // do your magic!
-});
-
-//custom middleware
-
-function validateUserId() {
-  return (req, res, next) => {
-    users.getById(req.params.id)
-    .then((user) => {
-      if (user) {
-        next()
-      }else {
-        res.status(400).json({
-          message: "invalid user id"
-        })
-      }
+router.post('/users/:id/posts', validateUserId(),  (req, res) => {
+  if(!req.body.text) {
+    return res.status(400).json({
+      message: "the value for the post text is missing"
     })
-    .catch(next)
   }
-}
+});
 
-function validateUser(req, res, next) {
-  if (!req.body) {
-    return res.status(400).json({
-      message: "missing user data"
-    })
-  }else if (!req.body.name) {
-    return res.status(400).json({
-      message: "missing required name field"
-    })
-  }else {
-    next()
+router.get('/users', (req, res) => {
+  const options = {
+    sortBy: req.query.sortBy,
+    limit: req.query.limit
   }
-}
 
-function validatePost(req, res, next) {
-  if (!req.body) {
-    return res.status(400).json({
-      message: "missing post data"
-    })
-  }else if (!req.body.text) {
-    return res.status(400).json({
-      message: "missing required text field"
-    })
-  }else {
-    next()
-  }
-}
+  users.get(options)
+  .then((users) => {
+    res.status(200).json(users)
+  })
+  .catch(next)
+});
 
-module.exports = {
-  router,
-  validateUserId,
-  validateUser,
-  validatePost
-}
+router.get('/users/:id', validateUserId(), (req, res) => {
+  res.status(200).json(req.user)
+});
+
+router.get('/user/:id/posts', validateUserId, (req, res) => {
+  users.getById(req.params.id)
+  .then((posts) => {
+    res.status(200).json(posts)
+  })
+  .catch(next)
+});
+
+router.delete('/users/:id', validateUserId, (req, res) => {
+  users.remove(req.params.id)
+  .then((count) => {
+    if (count > 0) {
+      res.status(200).json({
+        message: "The selected user has been deleted"
+      })
+    }else {
+      res.status(400).json({
+        message: "The user could not be found"
+      })
+    }
+  })
+  .catch(next)
+});
+
+router.put('/users/:id', validateUser(), validateUserId, (req, res) => {
+  users.update(req.params.id, req.body)
+  .then((user) => {
+    res.status(200).json(user)
+  })
+  .catch(next)
+});
+
+module.exports = router

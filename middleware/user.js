@@ -25,7 +25,7 @@ function validateUser() {
                 res.status(400).json({
                     message: "missing user data"
                 })
-            }else if (!res.body.name) {
+            }else if (!req.body.name) {
                 res.status(400).json({
                     message: "missing required name field"
                 })
@@ -37,7 +37,22 @@ function validateUser() {
     }
 }
 
+function validatePost(req, res, next) {
+    if (!req.body) {
+      return res.status(400).json({
+        message: "missing post data"
+      })
+    }else if (!req.body.text) {
+      return res.status(400).json({
+        message: "missing required text field"
+      })
+    }else {
+      next()
+    }
+  }
+
 module.exports = {
     validateUserId,
-    validateUser
+    validateUser,
+    validatePost
 }
