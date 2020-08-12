@@ -13,3 +13,5 @@ function validatePostId(req, res, next) {
     })
     .catch(next)
   }
+
+  module.exports = validatePostId

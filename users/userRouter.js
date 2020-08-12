@@ -2,7 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
-const { users, validateUserId, validateUser, validatePost } = require("../middleware/user")
+const { validateUserId, validateUser, validatePost } = require("../middleware/user")
+const users = require("./userDb")
 
 router.post('/users', validateUser, (req, res) => {
   users.insert(req.body)
@@ -20,13 +21,13 @@ router.post('/users/:id/posts', validateUserId(),  (req, res) => {
   }
 });
 
-router.get('/users', (req, res) => {
-  const options = {
-    sortBy: req.query.sortBy,
-    limit: req.query.limit
-  }
+router.get('/users', (req, res, next) => {
+  // const options = {
+  //   sortBy: req.query.sortBy,
+  //   limit: req.query.limit
+  // }
 
-  users.get(options)
+  users.get(users)
   .then((users) => {
     res.status(200).json(users)
   })
