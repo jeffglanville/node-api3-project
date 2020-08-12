@@ -32,16 +32,53 @@ router.put('/:id', (req, res) => {
 
 //custom middleware
 
-function validateUserId(req, res, next) {
-  // do your magic!
+function validateUserId() {
+  return (req, res, next) => {
+    users.getById(req.params.id)
+    .then((user) => {
+      if (user) {
+        next()
+      }else {
+        res.status(400).json({
+          message: "invalid user id"
+        })
+      }
+    })
+    .catch(next)
+  }
 }
 
 function validateUser(req, res, next) {
-  // do your magic!
+  if (!req.body) {
+    return res.status(400).json({
+      message: "missing user data"
+    })
+  }else if (!req.body.name) {
+    return res.status(400).json({
+      message: "missing required name field"
+    })
+  }else {
+    next()
+  }
 }
 
 function validatePost(req, res, next) {
-  // do your magic!
+  if (!req.body) {
+    return res.status(400).json({
+      message: "missing post data"
+    })
+  }else if (!req.body.text) {
+    return res.status(400).json({
+      message: "missing required text field"
+    })
+  }else {
+    next()
+  }
 }
 
-module.exports = router;
+module.exports = {
+  router,
+  validateUserId,
+  validateUser,
+  validatePost
+}
