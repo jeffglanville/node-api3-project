@@ -22,11 +22,6 @@ router.post('/users/:id/posts', validateUserId(),  (req, res) => {
 });
 
 router.get('/users', (req, res, next) => {
-  // const options = {
-  //   sortBy: req.query.sortBy,
-  //   limit: req.query.limit
-  // }
-
   users.get(users)
   .then((users) => {
     res.status(200).json(users)
@@ -38,12 +33,14 @@ router.get('/users/:id', validateUserId(), (req, res) => {
   res.status(200).json(req.user)
 });
 
-router.get('/user/:id/posts', validateUserId, (req, res) => {
-  users.getById(req.params.id)
+router.get('/users/:id/posts', validateUserId, (req, res) => {
+  users.getUserPosts(req.params.id)
   .then((posts) => {
     res.status(200).json(posts)
   })
-  .catch(next)
+  .catch((error) => {
+    next(error)
+  })
 });
 
 router.delete('/users/:id', validateUserId, (req, res) => {
