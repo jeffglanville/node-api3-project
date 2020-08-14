@@ -1,4 +1,5 @@
-const users = require("../users/userDB")
+const users = require("../users/userDb")
+const posts = require("../posts/postDb")
 
 function validateUserId() {
     return (req, res, next) => {
@@ -19,7 +20,7 @@ function validateUserId() {
 
 function validateUser() {
     return (req, res, next) => {
-        user.insert(req.body.name, req.body)
+        users.insert(req.body.name, req.body)
         .then((user) => {
             if (!req.body) {
                 res.status(400).json({
@@ -37,17 +38,19 @@ function validateUser() {
     }
 }
 
-function validatePost(req, res, next) {
-    if (!req.body) {
-      return res.status(400).json({
-        message: "missing post data"
-      })
-    }else if (!req.body.text) {
-      return res.status(400).json({
-        message: "missing required text field"
-      })
-    }else {
-      next()
+function validatePost() {
+    return (req, res, next) => {
+        if (!req.body.text) {
+            return res.status(400).json({
+              message: "missing post data"
+            })
+          }else if (!req.body) {
+            return res.status(400).json({
+              message: "missing required text field"
+            })
+          }else {
+            next()
+          }
     }
   }
 

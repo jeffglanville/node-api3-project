@@ -1,17 +1,20 @@
 const posts = require("../posts/postDb")
 
-function validatePostId(req, res, next) {
-    posts.insert(req.params.id)
+function validatePostId() {
+  return (req, res, next) => {
+    posts.getById(req.params.id)
     .then((post) => {
-      if (!req.params.id) {
-        res.status(400).json({
-          message: "post id is missing"
-        })
+      if (post) {
+        req.post = post
+        next()
       }else {
-        res.json(post)
+        res.status(400).json({
+          message: "invalid post id"
+        })
       }
     })
     .catch(next)
   }
+}
 
   module.exports = validatePostId
