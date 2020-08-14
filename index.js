@@ -13,7 +13,7 @@ server.use(express.json())
 
 server.use(logger())
 
-server.use("/", welcomeRouter)
+server.use(welcomeRouter)
 server.use(userRouter)
 server.use(postRouter)
 
