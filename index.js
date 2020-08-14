@@ -6,7 +6,7 @@ const userRouter = require("./users/userRouter")
 const postRouter = require("./posts/postRouter")
 
 const server = express()
-const port = 5000
+const port = process.env.PORT || 5000
 
 server.use(express.json())
 
@@ -23,5 +23,5 @@ server.use((err, req, res, next) => {
 })
 
 server.listen(port, () => {
-    console.log(`Server is listening and running at http://localhost:${port}`)
+    console.log(`Server is listening at http://localhost:${port}`)
 })
