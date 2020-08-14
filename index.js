@@ -4,6 +4,7 @@ const logger = require("./middleware/logger")
 
 const userRouter = require("./users/userRouter")
 const postRouter = require("./posts/postRouter")
+const welcomeRouter = require("./welcomeRouter")
 
 const server = express()
 const port = process.env.PORT || 5000
@@ -12,6 +13,7 @@ server.use(express.json())
 
 server.use(logger())
 
+server.use("/", welcomeRouter)
 server.use(userRouter)
 server.use(postRouter)
 
